@@ -198,7 +198,7 @@ function findQA() {
   // console.log("breakk");
 
   let answer = -1;
-  if (gamemode === "canoe-puppies") {
+  if (gamemode === "jet-ski") {
     const [num1, num2] = parseString(question);
     // console.log(num1);
     // console.log(num2);
