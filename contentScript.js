@@ -183,7 +183,9 @@ function parseString(str) {
 
 // Find out what the questions and answers are
 function findQA() {
-  let hud = IFRAME.querySelector('g[transform*="translate(104, 6)"]');
+  let doc = document.querySelector("#gameContainer > iframe").contentDocument;
+  let hud = doc.querySelector('g[transform*="translate(104, 6)"]');
+  if (!hud) { console.log("No question on screen yet"); return; }
   let question = hud.children[0].lastChild.textContent;
 
   // child of hud is answer, last child of that is <text>
@@ -231,6 +233,14 @@ function findQA() {
     answer = num1 / num2;
   }
 
+  if (gamemode === "jet-ski") {
+    let arr = question.split("+");
+    let num1 = parseInt(arr[0]);
+    let num2 = parseInt(arr[arr.length - 1]);
+
+    answer = num1 + num2;
+  }
+
   if (gamemode === "ducky-race") {
     let arr = question.split("-");
     let num1 = parseInt(arr[0]);
@@ -248,13 +258,14 @@ function findQA() {
   } else if (answer == var4) {
     dispatchEvent(4, "Digit4");
   } else {
-    console.log("Something went wrong\n");
+    console.log("DEBUG_CHECK answer=" + answer + " q=" + question + " vars=" + var1 + "," + var2 + "," + var3 + "," + var4);
   }
 }
 
-// Listen for user input
-IFRAME.body.addEventListener("keypress", function onEvent(event) {
-  if (event.key === "a") {
-    findQA();
-  }
+// Listen for user input - attach to both outer page and iframe body
+window.addEventListener("keypress", function onEvent(event) {
+  if (event.key === "a") findQA();
+});
+document.querySelector("#gameContainer > iframe").contentDocument.body.addEventListener("keypress", function onEvent(event) {
+  if (event.key === "a") findQA();
 });
